@@ -1,25 +1,28 @@
 import time
 from telebot import TeleBot
 
-from conf import TG_BOT_TOKEN, CHAT_ID
+from conf import TG_BOT_TOKEN, MY_CHAT_ID 
 from parser import get_post
 
 bot = TeleBot(TG_BOT_TOKEN)
 
+chat_ids = set()
+chat_ids.add(MY_CHAT_ID)
 
 # Handle '/start' and '/help'
 @bot.message_handler(commands=['help', 'start'])
 def send_welcome(message):
-    bot.reply_to(message, """\
-Hi there, I am ScheduleBot.
-""")
+    chat_id = message.chat.id 
+    chat_ids.add(chat_id)
+    bot.reply_to(message , "Hi there, I am ScheduleBot.")
 
 
 def my_send_message(text: str, links_photo: list[str]):
-    bot.send_message(CHAT_ID, text=text)
-    if links_photo:
-        for link in links_photo:
-            bot.send_photo(CHAT_ID, link)
+    for chat_id in chat_ids:
+        bot.send_message(chat_id, text=text)
+        if links_photo:
+            for link in links_photo:
+                bot.send_photo(chat_id, link)
 
 
 
