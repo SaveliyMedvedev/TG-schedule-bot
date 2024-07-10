@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "tg-parser"
+version = "0.1.0"
+description = ""
+authors = ["Saveliy <medsavfed@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+requests = "^2.32.3"
+pytelegrambotapi = "^4.21.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
