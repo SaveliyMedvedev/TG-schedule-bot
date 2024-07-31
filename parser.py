@@ -14,7 +14,7 @@ def get_post(old_hash) -> list:
             "count": 1
         }
     )
-        
+    print(response.json())
     item = response.json()["response"]["items"][0]
     hash_post = item["hash"]
     if old_hash == hash_post:
