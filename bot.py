@@ -3,7 +3,7 @@ from telebot import TeleBot
 from telebot.types import InputMediaPhoto
 
 from conf import TG_BOT_TOKEN, TG_CANNEL_ID
-from parser import get_post
+from parser import get_updates, get_post
 
 
 bot = TeleBot(TG_BOT_TOKEN)
@@ -16,20 +16,29 @@ def send_welcome(message):
     bot.reply_to(message, "Hi there, I am ScheduleBot.")
 
 
-def my_send_message(text: str, links_photo: tuple[str]):
+def send_to_telegram_channel(post_data):
+    text = post_data.get("text")
+    attachments = post_data.get("links_photo")
+
     bot.send_message(chat_id=TG_CANNEL_ID, text=text)
 
-    if links_photo:
-        media = [InputMediaPhoto(photo) for photo in links_photo]
+    if attachments:
+        media = [InputMediaPhoto(photo) for photo in attachments]
         bot.send_media_group(chat_id=TG_CANNEL_ID, media=media)
 
 
-old_hash = " "
-while True:
-    result = get_post(old_hash)
-    if result:
-        text, hash_photo, links_photo = result
-        my_send_message(text=text, links_photo=tuple(links_photo))
-        old_hash = hash_photo
+def main():
+    while True:
+        try:
+            updates = get_updates()
+            print(updates)
+            if updates:
+                if updates[0]["type"] == "wall_post_new":
+                    send_to_telegram_channel(get_post())
+        except Exception as e:
+            print(f"Error: {e}")
+            continue
 
-    time.sleep(600)
+
+if __name__ == "__main__":
+    main()
